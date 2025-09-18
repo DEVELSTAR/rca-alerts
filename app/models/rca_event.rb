@@ -1,0 +1,2 @@
+class RcaEvent < ApplicationRecord
+end
