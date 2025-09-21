@@ -6,8 +6,8 @@
   enabled: true
   schedule:
     rca_detector_job:
-      every: ["5s"]   # every 5 minutes
+      every: ["1m"]   # every 5 minutes
       class: "RcaDetectorJob"
     alert_dispatcher_job:
-      every: ["2s"]   # every 2 minutes
+      every: ["1m"]   # every 2 minutes
       class: "AlertDispatcherJob"

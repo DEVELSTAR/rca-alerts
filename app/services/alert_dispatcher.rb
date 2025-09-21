@@ -4,7 +4,7 @@ class AlertDispatcher
     RcaEvent.where(status: "open", alerted: [ nil, false ])
             .where("ts > ?", 15.minutes.ago)
             .find_each do |event|
-      send_slack(event)
+      # send_slack(event)
       # send_email(event)
       # send_webhook(event)
       event.update(alerted: true)

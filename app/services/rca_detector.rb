@@ -38,11 +38,11 @@ class RcaDetector
           location,
           isp,
           endpoint,
-          avg_latency AS recent_avg
+          sum_latency / samples AS recent_avg
       FROM router_metrics_rollup
       WHERE ts_min >= subtractMinutes(now(), 5)
-      AND avg_latency > 100
-      ORDER BY avg_latency DESC
+      AND sum_latency / samples > 100
+      ORDER BY recent_avg DESC
       LIMIT 20
     SQL
 
@@ -72,16 +72,16 @@ class RcaDetector
           location,
           isp,
           endpoint,
-          packet_loss_count
+          (sum_loss / samples) AS loss_pct
       FROM router_metrics_rollup
       WHERE ts_min >= subtractMinutes(now(), 5)
-      AND packet_loss_count > 0
-      ORDER BY packet_loss_count DESC
+      AND (sum_loss / samples) > 0.1   -- >10% packet loss threshold
+      ORDER BY loss_pct DESC
       LIMIT 20
     SQL
 
     client.select_all(sql).each do |row|
-      value = row["packet_loss_count"]
+      value = row["loss_pct"]
       find_or_create_event(
         ts: Time.current,
         location: row["location"],
@@ -91,7 +91,7 @@ class RcaDetector
         value: value,
         baseline: 0,
         severity: "critical",
-        message: "High packet loss: #{value}%",
+        message: "High packet loss: #{(value * 100).round(1)}%",
         status: "open"
       )
     end

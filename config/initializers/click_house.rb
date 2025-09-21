@@ -1,3 +1,4 @@
+# rca-alerts/config/initializers/click_house.rb
 ClickHouse.config do |config|
   config.url = ENV.fetch("CLICKHOUSE_URL", "http://127.0.0.1:8123")
   config.username = ENV["CLICKHOUSE_USER"]
