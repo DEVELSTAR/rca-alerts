@@ -12,12 +12,14 @@ module Api
           SELECT
             ts_min,
             endpoint,
-            avg_latency,
+            location,
+            isp,
+            sum_latency / samples AS avg_latency,
             samples
           FROM router_metrics_rollup
           WHERE 1=1
-          #{ "AND location = '#{location}'" if location.present? }
-          #{ "AND isp = '#{isp}'" if isp.present? }
+            #{ "AND location = '#{location}'" if location.present? }
+            #{ "AND isp = '#{isp}'" if isp.present? }
           ORDER BY ts_min DESC
           LIMIT 100
         SQL
@@ -35,9 +37,9 @@ module Api
             location,
             isp,
             endpoint,
-            avg(avg_latency) AS avg_latency,
-            max(max_latency) AS max_latency,
-            min(min_latency) AS min_latency,
+            avg(sum_latency / samples) AS avg_latency,
+            max(sum_latency / samples) AS max_latency,
+            min(sum_latency / samples) AS min_latency,
             sum(samples) AS total_samples
           FROM router_metrics_rollup
           GROUP BY location, isp, endpoint

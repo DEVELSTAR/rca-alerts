@@ -1,78 +1,42 @@
 module Api
   module V1
     class RcaEventsController < ApplicationController
+
       # GET /api/v1/rca_events
-      # Fetch the 50 most recent RCA (Root Cause Analysis) events
       def index
-        events = RcaEvent.order(ts: :desc).limit(50)
-        render json: events
+        render json: RcaEventService.index
       end
 
+      # ----------------------------
       # GET /api/v1/rca_events/active
-      # Fetch all currently active (open) RCA events
+      # Detect spikes, packet loss, HTTP failures in last 5 min
+      # ----------------------------
       def active
-        events = RcaEvent.where(status: "open").order(ts: :desc)
-        render json: events
+        render json: RcaEventService.active
       end
 
-      # GET /api/v1/rca/summary
-      # Return a summary of open issues grouped by location & ISP
-      # Example: [{ "location": "Bangalore", "isp": "Airtel", "count": 2 }]
+      # ----------------------------
+      # GET /api/v1/rca_events/summary
+      # Group open issues by location & ISP
+      # ----------------------------
       def summary
-        data = RcaEvent.where(status: "open")
-                       .group(:location, :isp)
-                       .count
-
-        formatted = data.map do |(location, isp), count|
-          {
-            location: location,
-            isp: isp,
-            count: count
-          }
-        end
-
-        render json: formatted
+        render json: RcaEventService.summary
       end
 
-      # GET /api/v1/rca/org_alerts
-      # Return alerts per endpoint → how many locations are affected and which ISPs
-      # Example: [{ "endpoint": "8.8.8.8", "bad_locations": 2, "bad_isps": ["Airtel", "Jio"] }]
+      # ----------------------------
+      # GET /api/v1/rca_events/org_alerts
+      # Show alerts per endpoint: locations affected & ISPs
+      # ----------------------------
       def org_alerts
-        raw_data = RcaEvent.where(status: "open")
-                           .group(:endpoint)
-                           .pluck(:endpoint,
-                                  Arel.sql("COUNT(DISTINCT location) as bad_locations"),
-                                  Arel.sql("GROUP_CONCAT(DISTINCT isp) as bad_isps"))
-
-        formatted = raw_data.map do |endpoint, bad_locations, bad_isps|
-          {
-            endpoint: endpoint,
-            bad_locations: bad_locations,
-            bad_isps: bad_isps.to_s.split(",")
-          }
-        end
-
-        render json: formatted
+        render json: RcaEventService.org_alerts
       end
 
-      # GET /api/v1/rca/top_issues
-      # Return the top 5 ISPs/locations with the highest latency increase (vs baseline)
+      # ----------------------------
+      # GET /api/v1/rca_events/top_issues
+      # Top 5 ISP/location with highest latency increase vs last 1 hour
+      # ----------------------------
       def top_issues
-        sql = <<~SQL
-          SELECT
-            isp,
-            location,
-            (avg(value) - avg(baseline)) / NULLIF(avg(baseline), 0) * 100 AS latency_increase_pct
-          FROM rca_events
-          WHERE metric_type = 'latency'
-            AND status = 'open'
-          GROUP BY isp, location
-          ORDER BY latency_increase_pct DESC
-          LIMIT 5
-        SQL
-
-        results = ActiveRecord::Base.connection.exec_query(sql)
-        render json: results
+        render json: RcaEventService.top_issues
       end
     end
   end

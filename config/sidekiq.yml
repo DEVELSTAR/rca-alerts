@@ -5,9 +5,9 @@
 :scheduler:
   enabled: true
   schedule:
-    rca_detector_job:
-      every: ["1m"]   # every 5 minutes
-      class: "RcaDetectorJob"
+    # rca_detector_job:
+    #   every: ["5s"]
+    #   class: "RcaDetectorJob"
     alert_dispatcher_job:
-      every: ["1m"]   # every 2 minutes
+      every: ["2s"]
       class: "AlertDispatcherJob"

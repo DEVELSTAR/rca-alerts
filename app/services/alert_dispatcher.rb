@@ -1,23 +1,11 @@
 # app/services/alert_dispatcher.rb
 class AlertDispatcher
-  def self.run
-    RcaEvent.where(status: "open", alerted: [ nil, false ])
-            .where("ts > ?", 15.minutes.ago)
-            .find_each do |event|
-      # send_slack(event)
-      # send_email(event)
-      # send_webhook(event)
-      event.update(alerted: true)
-    end
-  end
-
   def self.send_slack(event)
     webhook_url = ENV["SLACK_WEBHOOK_URL"]
-
     return unless webhook_url
 
     payload = {
-      text: "[#{event.severity.upcase}] #{event.metric_type} alert\nLocation: #{event.location}\nISP: #{event.isp}\nEndpoint: #{event.endpoint}\nMessage: #{event.message}"
+      text: "[ALERT] Latency: #{event['avg_latency']}, Packet Loss: #{(event['packet_loss']*100).round(1)}%, HTTP Failures: #{event['http_failures']} Location: #{event['location']}, ISP: #{event['isp']}, Endpoint: #{event['endpoint']}"
     }
 
     require "net/http"
@@ -37,8 +25,7 @@ class AlertDispatcher
     webhook_url = ENV["ALERT_WEBHOOK_URL"]
     return unless webhook_url
 
-    payload = event.as_json
     uri = URI(webhook_url)
-    Net::HTTP.post(uri, payload.to_json, "Content-Type" => "application/json")
+    Net::HTTP.post(uri, event.to_json, "Content-Type" => "application/json")
   end
 end
