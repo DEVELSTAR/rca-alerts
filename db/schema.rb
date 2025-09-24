@@ -10,7 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_15_203830) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_24_072657) do
+  create_table "endpoint_configurations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "tenant_id"
+    t.integer "endpoint_monitoring_group_id"
+    t.integer "router_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "endpoint_monitoring_endpoints", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "endpoint_monitoring_group_id", null: false
+    t.string "endpoint", null: false
+    t.string "host", null: false
+    t.string "monitoring_mode", null: false
+    t.string "monitor_method", null: false
+    t.integer "critical"
+    t.integer "warning"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["endpoint_monitoring_group_id"], name: "idx_on_endpoint_monitoring_group_id_1f2ab4005c"
+  end
+
+  create_table "endpoint_monitoring_groups", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "rca_events", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "ts"
     t.string "location"
@@ -26,4 +53,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_15_203830) do
     t.datetime "updated_at", null: false
     t.boolean "alerted"
   end
+
+  add_foreign_key "endpoint_monitoring_endpoints", "endpoint_monitoring_groups"
 end

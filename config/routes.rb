@@ -21,6 +21,9 @@ Rails.application.routes.draw do
           get :active
         end
       end
+
+      resources :endpoint_configurations
+      resources :endpoint_monitoring_groups
     end
   end
 end

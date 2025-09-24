@@ -1,6 +1,5 @@
 # app/services/rca_event_service.rb
 class RcaEventService
-
   # ----------------------------
   # Full history (last 60 min)
   # ----------------------------

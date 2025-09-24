@@ -1,7 +1,6 @@
 module Api
   module V1
     class RcaEventsController < ApplicationController
-
       # GET /api/v1/rca_events
       def index
         render json: RcaEventService.index

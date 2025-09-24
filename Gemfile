@@ -58,3 +58,5 @@ gem "ruby-kafka"   # Kafka client for producers/consumers
 gem "racecar"      # Optional: framework for long-running consumers
 gem "sidekiq"
 gem "sidekiq-scheduler"
+gem "redis"
+gem "jsonapi-serializer"

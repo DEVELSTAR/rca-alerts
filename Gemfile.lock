@@ -158,6 +158,8 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.13.2)
+    jsonapi-serializer (2.2.0)
+      activesupport (>= 4.2)
     kamal (2.7.0)
       activesupport (>= 7.0)
       base64 (~> 0.2)
@@ -325,6 +327,8 @@ GEM
     rdoc (6.14.2)
       erb
       psych (>= 4.0.0)
+    redis (5.4.1)
+      redis-client (>= 0.22.0)
     redis-client (0.25.3)
       connection_pool
     regexp_parser (2.11.3)
@@ -440,6 +444,7 @@ DEPENDENCIES
   dotenv-rails
   faker
   httparty
+  jsonapi-serializer
   kamal
   kaminari
   kaminari-bootstrap
@@ -447,6 +452,7 @@ DEPENDENCIES
   puma (>= 5.0)
   racecar
   rails (~> 8.0.2, >= 8.0.2.1)
+  redis
   rubocop-rails-omakase
   ruby-kafka
   sidekiq
