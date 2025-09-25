@@ -12,30 +12,42 @@
 
 ActiveRecord::Schema[8.0].define(version: 2025_09_24_072657) do
   create_table "endpoint_configurations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.integer "tenant_id"
-    t.integer "endpoint_monitoring_group_id"
-    t.integer "router_id"
+    t.bigint "organisation_id"
+    t.bigint "endpoint_monitoring_group_id"
+    t.bigint "associated_resoures_id"
+    t.string "associated_resoures_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["associated_resoures_type", "associated_resoures_id"], name: "index_endpoint_configs_on_associated_resource"
   end
 
   create_table "endpoint_monitoring_endpoints", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "endpoint_monitoring_group_id", null: false
-    t.string "endpoint", null: false
+    t.string "endpoint_name", null: false
     t.string "host", null: false
     t.string "monitoring_mode", null: false
-    t.string "monitor_method", null: false
-    t.integer "critical"
-    t.integer "warning"
+    t.integer "port"
+    t.integer "latency_critical"
+    t.integer "packet_loss_critical"
+    t.integer "latency_warning"
+    t.integer "packet_loss_warning"
+    t.integer "response_time"
+    t.json "acceptable_response_codes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["endpoint_monitoring_group_id"], name: "idx_on_endpoint_monitoring_group_id_1f2ab4005c"
+    t.index ["endpoint_name"], name: "index_endpoint_monitoring_endpoints_on_endpoint_name"
+    t.index ["host"], name: "index_endpoint_monitoring_endpoints_on_host"
+    t.index ["monitoring_mode"], name: "index_endpoint_monitoring_endpoints_on_monitoring_mode"
   end
 
   create_table "endpoint_monitoring_groups", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
+    t.string "group_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["group_type"], name: "index_endpoint_monitoring_groups_on_group_type"
+    t.index ["name"], name: "index_endpoint_monitoring_groups_on_name"
   end
 
   create_table "rca_events", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

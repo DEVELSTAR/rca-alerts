@@ -1,7 +1,7 @@
 module Api
   module V1
     class EndpointConfigurationsController < ApplicationController
-      before_action :set_config, only: [ :show, :update, :destroy ]
+      before_action :set_config, only: %i[show update destroy]
 
       def index
         configs = EndpointConfiguration.all
@@ -47,9 +47,10 @@ module Api
 
       def config_params
         params.require(:endpoint_configuration).permit(
-          :tenant_id,
+          :organisation_id,
           :endpoint_monitoring_group_id,
-          :router_id
+          :associated_resoures_id,
+          :associated_resoures_type
         )
       end
     end

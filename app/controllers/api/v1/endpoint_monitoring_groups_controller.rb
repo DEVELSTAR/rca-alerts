@@ -1,7 +1,7 @@
 module Api
   module V1
     class EndpointMonitoringGroupsController < ApplicationController
-      before_action :set_group, only: [ :show, :update, :destroy ]
+      before_action :set_group, only: %i[show update destroy]
 
       def index
         groups = EndpointMonitoringGroup.includes(:endpoint_monitoring_endpoints)
@@ -48,8 +48,20 @@ module Api
       def group_params
         params.require(:endpoint_monitoring_group).permit(
           :name,
+          :group_type,
           endpoint_monitoring_endpoints_attributes: [
-            :id, :endpoint, :host, :monitoring_mode, :monitor_method, :critical, :warning, :_destroy
+            :id,
+            :endpoint_name,
+            :host,
+            :monitoring_mode,
+            :port,
+            :latency_critical,
+            :latency_warning,
+            :packet_loss_critical,
+            :packet_loss_warning,
+            :response_time,
+            :_destroy,
+            acceptable_response_codes: []
           ]
         )
       end
