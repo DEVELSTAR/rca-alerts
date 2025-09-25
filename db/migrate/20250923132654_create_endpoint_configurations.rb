@@ -11,6 +11,6 @@ class CreateEndpointConfigurations < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :endpoint_configurations, [:associated_resoures_type, :associated_resoures_id], name: "index_endpoint_configs_on_associated_resource"
+    add_index :endpoint_configurations, [ :associated_resoures_type, :associated_resoures_id ], name: "index_endpoint_configs_on_associated_resource"
   end
 end
