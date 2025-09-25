@@ -6,7 +6,7 @@ class EndpointConfiguration < ApplicationRecord
     RouterInventory
     ActsAsTaggableOn::Tag
   ].freeze
-  
+
   validates :organisation_id, :endpoint_monitoring_group_id, presence: true
   validates :associated_resoures_type, inclusion: { in: ALLOWED_RESOURCE_TYPES }
 

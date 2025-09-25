@@ -42,8 +42,7 @@ group :development, :test do
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
 
-  # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
-  gem "rubocop-rails-omakase", require: false
+  gem "rubocop", "~> 1.80", ">= 1.80.2"
   gem "bullet"
 end
 gem "activerecord"
